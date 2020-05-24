@@ -19,7 +19,9 @@
 
     function moveEverything() {
         ballX = ballX + ballSpeedX;
-        ballSpeedX = ballSpeedX + 1;
+        if (ballX > 800) {
+            ballSpeedX = -5;
+        }
     }
 
     function drawEverything() {
