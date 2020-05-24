@@ -19,6 +19,9 @@
     var paddle1Y = 250;
     var paddle2Y = 250;
 
+    var player1Score = 0;
+    var player2Score = 0;
+
     function calculateMousePos(evt) {
         var rect = canvas.getBoundingClientRect();
         var root = document.documentElement;
@@ -70,6 +73,7 @@
                 ballSpeedX = -ballSpeedX;
             } else {
                 ballReset();
+                player2Score++;
             }
         }
         if (ballX > canvas.width) {
@@ -77,6 +81,7 @@
                 ballSpeedX = -ballSpeedX;
             } else {
                 ballReset();
+                player1Score++;
             }
         }
         ballY = ballY + ballSpeedY;
@@ -103,6 +108,9 @@
         );
         // next lines draw the ball
         colorCircle(ballX, ballY, 10, ballColor);
+
+        canvasContext.fillText(player1Score, 100, 100);
+        canvasContext.fillText(player2Score, canvas.width - 100, 100);
     }
 
     function colorCircle(centerX, centerY, radius, drawColor) {
