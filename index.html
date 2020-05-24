@@ -2,15 +2,18 @@
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 </html>
 <script>
+    const PADDLE_HEIGHT = 200;
+    const BALL_COLOR_1 = "red";
+    const BALL_COLOR_2 = "yellow";
     var canvas;
     var canvasContext;
     var ballX = 50;
     var ballY = 50;
     var ballSpeedX = 10;
     var ballSpeedY = 4;
+    var ballColor = BALL_COLOR_1;
 
     var paddle1Y = 250;
-    const PADDLE_HEIGHT = 100;
 
     function calculateMousePos(evt) {
         var rect = canvas.getBoundingClientRect();
@@ -40,6 +43,8 @@
         ballSpeedX = -ballSpeedX;
         ballX = canvas.width / 2;
         ballY = canvas.height / 2;
+        // Line below is for testing collisions
+        ballColor = ballColor == BALL_COLOR_2 ? BALL_COLOR_1 : BALL_COLOR_2;
     }
 
     function moveEverything() {
@@ -47,7 +52,11 @@
         ballY = ballY + ballSpeedY;
 
         if (ballX < 0) {
-            ballReset();
+            if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
+                ballSpeedX = -ballSpeedX;
+            } else {
+                ballReset();
+            }
         }
         if (ballX > canvas.width) {
             ballSpeedX = -ballSpeedX;
@@ -67,7 +76,7 @@
         // this is left player paddle
         colorRect(0, paddle1Y, 10, PADDLE_HEIGHT, "white");
         // next lines draw the ball
-        colorCircle(ballX, ballY, 10, "white");
+        colorCircle(ballX, ballY, 10, ballColor);
     }
 
     function colorCircle(centerX, centerY, radius, drawColor) {
