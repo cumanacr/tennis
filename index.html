@@ -1,5 +1,10 @@
 <html>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <a id="download" download="image.png"
+        ><button type="button" onClick="saveScreenShot()">
+            Save Screen Shot
+        </button></a
+    >
 </html>
 <script>
     const PADDLE_HEIGHT = 100;
@@ -163,5 +168,14 @@
     function colorRect(leftX, topY, width, height, drawColor) {
         canvasContext.fillStyle = drawColor;
         canvasContext.fillRect(leftX, topY, width, height);
+    }
+
+    function saveScreenShot() {
+        var download = document.getElementById("download");
+        var image = document
+            .getElementById("gameCanvas")
+            .toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+        download.setAttribute("href", image);
     }
 </script>
