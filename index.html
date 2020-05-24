@@ -8,6 +8,7 @@
     const CANVAS_COLOR = "black";
     const PADDLE_COLOR = "white";
     const PADDLE_THICKNESS = 10;
+    const WINNING_SCORE = 3;
     var canvas;
     var canvasContext;
     var ballX = 50;
@@ -22,6 +23,8 @@
     var player1Score = 0;
     var player2Score = 0;
 
+    var showingWinScreen = false;
+
     function calculateMousePos(evt) {
         var rect = canvas.getBoundingClientRect();
         var root = document.documentElement;
@@ -31,6 +34,14 @@
         return { x: mouseX, y: mouseY };
     }
 
+    function handleMouseClick(evt) {
+        if (showingWinScreen) {
+            player1Score = 0;
+            player2Score = 0;
+            showingWinScreen = false;
+        }
+    }
+
     window.onload = function () {
         canvas = document.getElementById("gameCanvas");
         canvasContext = canvas.getContext("2d");
@@ -38,6 +49,7 @@
             var mousePos = calculateMousePos(evt);
             paddle1Y = mousePos.y - PADDLE_HEIGHT / 2;
         });
+        canvas.addEventListener("mousedown", handleMouseClick);
 
         var framesPerSecond = 30;
         setInterval(function () {
@@ -47,6 +59,9 @@
     };
 
     function ballReset() {
+        if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
+            showingWinScreen = true;
+        }
         ballSpeedX = -ballSpeedX;
         ballX = canvas.width / 2;
         ballY = canvas.height / 2;
@@ -64,6 +79,9 @@
     }
 
     function moveEverything() {
+        if (showingWinScreen) {
+            return;
+        }
         computerMovement();
         ballX += ballSpeedX;
         ballY += ballSpeedY;
@@ -100,6 +118,17 @@
     function drawEverything() {
         // next line blanks out the screen with black
         colorRect(0, 0, canvas.width, canvas.height, CANVAS_COLOR);
+        if (showingWinScreen) {
+            canvasContext.fillStyle = ballColor;
+            if (player1Score >= WINNING_SCORE) {
+                canvasContext.fillText("You won!", 350, 200);
+            } else if (player2Score >= WINNING_SCORE) {
+                canvasContext.fillText("You lose!", 350, 200);
+            }
+
+            canvasContext.fillText("Click to continue", 350, 500);
+            return;
+        }
         // this is left player paddle
         colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, PADDLE_COLOR);
         // this is right computer paddle
@@ -112,7 +141,6 @@
         );
         // next lines draw the ball
         colorCircle(ballX, ballY, 10, ballColor);
-
         canvasContext.fillText(player1Score, 100, 100);
         canvasContext.fillText(player2Score, canvas.width - 100, 100);
     }
